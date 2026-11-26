@@ -1,0 +1,17 @@
+
+<section class="card narrow">
+  <h2>Log in</h2>
+  <p class="muted">Students and administrators use the same form.</p>
+  <form method="post">
+    <input type="hidden" name="csrf" value="{{ csrf_token }}">
+    <label>Username
+      <input name="username" required autofocus autocomplete="username">
+    </label>
+    <label>Password
+      <input name="password" type="password" required autocomplete="current-password">
+    </label>
+    <button class="btn" type="submit">Log in</button>
+  </form>
+  <p class="muted">No account yet? <a href="{{ url_for('register') }}">Register as a student</a>.</p>
+</section>
+{% endblock %}

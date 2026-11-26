@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Admin panel{% endblock %}
+{% block content %}
+<h2>Administrator panel</h2>
+
+<section class="card">
+  <div class="row-between">
+    <h3>Courses ({{ course_stats|length }})</h3>
+    <a class="btn btn-small" href="{{ url_for('admin_course_new') }}">+ Add course</a>
+  </div>
+  {% if course_stats %}
+  <table>
+    <thead><tr><th>Course</th><th>Schedule</th><th>Teacher</th><th>Students</th><th></th></tr></thead>
+    <tbody>
+    {% for c in course_stats %}
+      <tr>
+        <td><strong>{{ c.name }}</strong></td>
+        <td>{{ c.schedule }}</td>
+        <td>{{ c.teacher }}</td>
+        <td>
+          {{ c.enrolled }} / {{ c.max_students }}
+          {% if c.enrolled >= c.max_students %}<span class="badge badge-full">Full</span>{% endif %}
+        </td>
+        <td class="nowrap">
+          <a href="{{ url_for('admin_course', course_id=c.id) }}">Class list</a> ·
+          <a href="{{ url_for('admin_course_edit', course_id=c.id) }}">Edit</a>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p class="muted">No courses yet. Add the first one.</p>
+  {% endif %}
+</section>
+
+<section class="card">
+  <div class="row-between">
+    <h3>Students ({{ students|length }})</h3>
+    <form method="get" class="search">
+      <input name="q" placeholder="Search name or username" value="{{ q }}">
+      <button class="btn btn-small" type="submit">Search</button>
+    </form>
+  </div>
+  {% if students %}
+  <table>
+    <thead><tr><th>Name</th><th>Username</th><th>Courses</th><th>Registered</th><th></th></tr></thead>
+    <tbody>
+    {% for s in students %}
+      <tr>
+        <td><strong>{{ s.full_name }}</strong></td>
+        <td>{{ s.username }}</td>
+        <td>{% if s.courses %}{{ s.courses }}{% else %}<span class="muted">none</span>{% endif %}</td>
+        <td>{{ s.created_at[:10] }}</td>
+        <td><a href="{{ url_for('admin_student', student_id=s.id) }}">Manage</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p class="muted">No students found.</p>
+  {% endif %}
+</section>
+{% endblock %}

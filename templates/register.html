@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Register{% endblock %}
+{% block content %}
+<section class="card">
+  <h2>Student registration</h2>
+  <form method="post">
+    <input type="hidden" name="csrf" value="{{ csrf_token }}">
+    <div class="grid-2">
+      <label>Full name
+        <input name="full_name" required value="{{ form.get('full_name', '') }}">
+      </label>
+      <label>Username
+        <input name="username" required minlength="3" autocomplete="username"
+               value="{{ form.get('username', '') }}">
+      </label>
+      <label>Password
+        <input name="password" type="password" required minlength="6" autocomplete="new-password">
+      </label>
+      <label>Confirm password
+        <input name="confirm" type="password" required minlength="6" autocomplete="new-password">
+      </label>
+    </div>
+
+    <h3>Choose your courses</h3>
+    <p class="muted">You can change this later from your dashboard.</p>
+    <div class="course-grid">
+      {% for c in courses %}
+      {% set full = c.enrolled >= c.max_students %}
+      <label class="course-option {% if full %}is-full{% endif %}">
+        <input type="checkbox" name="courses" value="{{ c.id }}"
+               {% if c.id|string in chosen and not full %}checked{% endif %}
+               {% if full %}disabled{% endif %}>
+        <span>
+          <strong>{{ c.name }}</strong>
+          <small>{{ c.schedule }} · {{ c.teacher }}</small>
+          <small>{% if full %}Full{% else %}{{ c.max_students - c.enrolled }} seats left{% endif %}</small>
+        </span>
+      </label>
+      {% endfor %}
+    </div>
+
+    <button class="btn" type="submit">Create account</button>
+  </form>
+</section>
+{% endblock %}
